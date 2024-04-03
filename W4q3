@@ -1,0 +1,82 @@
+/*Given an unsorted array of integers, design an algorithm and implement it using a program to find Kth smallest or largest element in the array.(Worst case Time Complexity= O(n))
+
+Input format:
+The first line contains number of test cases, T.
+For each test case, there will be three input lines.
+First line contains n (the size of array).
+Second line contains space-separated integers describing array.
+Third line contains K.
+
+Output Format:
+The output will have T number of lines.
+For each test case, output will be the Kth smallest or largest array element.
+If no Kth element is present, output should be "not present".
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(int arr[], int low, int high, int *comparisons, int *swaps) {
+    srand(time(NULL));
+    int randomIndex = low + rand() % (high - low + 1);
+    swap(&arr[randomIndex], &arr[high]);
+
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        (*comparisons)++;
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+            (*swaps)++;
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    (*swaps)++;
+    return (i + 1);
+}
+
+void quickSort(int arr[], int low, int high, int *comparisons, int *swaps) {
+    if (low < high) {
+        int pi = partition(arr, low, high, comparisons, swaps);
+
+        quickSort(arr, low, pi - 1, comparisons, swaps);
+        quickSort(arr, pi + 1, high, comparisons, swaps);
+    }
+}
+
+int main() {
+    int t;
+    scanf("%d", &t);
+
+    while (t--) {
+        int n; 
+        scanf("%d", &n);
+        int arr[n];
+        for (int i = 0; i < n; i++) {
+            scanf("%d", &arr[i]); 
+        }
+
+        int comparisons = 0, swaps = 0;
+        quickSort(arr, 0, n - 1, &comparisons, &swaps); 
+
+        for (int i = 0; i < n; i++) {
+            printf("%d ", arr[i]);
+        }
+        printf("\n");
+
+        printf("%d\n", comparisons);
+
+        printf("%d\n", swaps);
+    }
+
+    return 0;
+}
