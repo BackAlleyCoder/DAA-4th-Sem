@@ -1,0 +1,84 @@
+/*Given an unsorted array of integers, design an algorithm and implement it using a program to sort an array of elements by partitioning the array into two subarrays based on a pivot element such that one of the sub array holds value smaller than the Pivot element while another sub array holds value greater than the pivot element. Pivot element should be selected randomly from the array. Ypur program should also find the number of comparisons and swaps required for sorting the array.
+
+Input format:
+The first line contains number of test cases, T.
+For each test case, there will be two input lines.
+First line contains n (the size of array).
+Second line contains space-separated integers describing array.
+
+Output Format:
+The output will have T number of lines.
+For each test case T, there will be three output lines.
+First line will give the sorted array.
+Second line will give total number of comparisons.
+Third line will give total number of swaps required.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(int arr[], int low, int high, int *comparisons, int *swaps) {
+    // Selecting a random pivot
+    srand(time(NULL));
+    int randomIndex = low + rand() % (high - low + 1);
+    swap(&arr[randomIndex], &arr[high]);
+
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        (*comparisons)++;
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+            (*swaps)++;
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    (*swaps)++;
+    return (i + 1);
+}
+
+void quickSort(int arr[], int low, int high, int *comparisons, int *swaps) {
+    if (low < high) {
+        int pi = partition(arr, low, high, comparisons, swaps);
+
+        quickSort(arr, low, pi - 1, comparisons, swaps);
+        quickSort(arr, pi + 1, high, comparisons, swaps);
+    }
+}
+
+int main() {
+    int t;
+    scanf("%d", &t);
+
+    while (t--) {
+        int n; 
+        scanf("%d", &n);
+        int arr[n]; 
+        for (int i = 0; i < n; i++) {
+            scanf("%d", &arr[i]);
+        }
+
+        int comparisons = 0, swaps = 0;
+        quickSort(arr, 0, n - 1, &comparisons, &swaps); 
+d array
+        for (int i = 0; i < n; i++) {
+            printf("%d ", arr[i]);
+        }
+        printf("\n");
+
+        printf("%d\n", comparisons);
+
+        printf("%d\n", swaps);
+    }
+
+    return 0;
+}
